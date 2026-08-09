@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco Digital Monopoly - Local</title>
+  <style>
+    /* ===== ESTILOS ===== */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #1e7e34;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      width: 90%;
+      max-width: 460px;
+      margin: 30px auto;
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 12px;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      margin-bottom: 6px;
+      box-sizing: border-box;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    .player-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: white;
+    border-radius: 4px;
+    margin: 4px 0;
+    border: 1px solid #e9ecef;
+  }
+  .player-item .player-nome {
+    font-weight: bold;
+    flex: 1;
+  }
+  .player-item .player-saldo {
+    margin: 0 12px;
+    color: #1e7e34;
+    font-weight: bold;
+    min-width: 60px;
+  }
+  .player-item .player-actions {
+    display: flex;
+    gap: 4px;
+  }
+  .player-item .player-actions input {
+    width: 70px;
+    padding: 4px 6px;
+    margin: 0;
+    font-size: 0.8rem;
+  }
+  .player-item .player-actions button {
+    padding: 4px 10px;
+    margin: 0;
+    font-size: 0.8rem;
+    width: auto;
+  }
+  .btn-salvar-saldo {
+    background: #17a2b8 !important;
+  }
+  .btn-salvar-saldo:hover {
+    background: #138496 !important;
+  }
+  .btn-remover-player {
+    background: #dc3545 !important;
+  }
+  .btn-remover-player:hover {
+    background: #c82333 !important;
+  }
+    button {
+      background: #1e7e34;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #14632a;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .btn-criar {
+      background: #0056b3;
+    }
+    .btn-criar:hover {
+      background: #004494;
+    }
+    .btn-aleatorio {
+      background: #28a745;
+    }
+    .btn-aleatorio:hover {
+      background: #218838;
+    }
+    .btn-transferir {
+      background: #17a2b8;
+    }
+    .btn-transferir:hover {
+      background: #138496;
+    }
+    .btn-pagar {
+      background: #dc3545;
+    }
+    .btn-pagar:hover {
+      background: #c82333;
+    }
+    .btn-receber {
+      background: #28a745;
+    }
+    .btn-receber:hover {
+      background: #218838;
+    }
+    .btn-excluir {
+      background: #dc3545;
+    }
+    .btn-excluir:hover {
+      background: #c82333;
+    }
+    .btn-voltar {
+      background: #6c757d;
+    }
+    .btn-voltar:hover {
+      background: #5a6268;
+    }
+    .saldo {
+      text-align: center;
+      font-size: 2.4rem;
+      color: #1e7e34;
+      margin: 16px 0;
+      font-weight: bold;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    ul li {
+      background: #f8f8f8;
+      padding: 8px 12px;
+      margin: 4px 0;
+      border-radius: 6px;
+      border-left: 4px solid #1e7e34;
+    }
+    #jogo {
+      display: none;
+    }
+    #adminPanel {
+      display: none;
+    }
+    hr {
+      margin: 24px 0 12px 0;
+    }
+    .botoes-sessao {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .botoes-sessao button {
+      flex: 1;
+      min-width: 120px;
+    }
+    .info-codigo {
+      background: #e9ecef;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin: 8px 0;
+      font-size: 0.9rem;
+      color: #495057;
+    }
+    .info-codigo.sucesso {
+      background: #d4edda;
+      color: #155724;
+    }
+    .info-codigo.erro {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    .botoes-transacao {
+      display: flex;
+      gap: 8px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .botoes-transacao button {
+      flex: 1;
+      min-width: 100px;
+      padding: 10px;
+      font-size: 0.95rem;
+    }
+    .botoes-admin {
+      display: flex;
+      gap: 8px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .botoes-admin button {
+      flex: 1;
+      min-width: 100px;
+      padding: 10px;
+      font-size: 0.95rem;
+    }
+    .dados-salvos {
+      font-size: 0.8rem;
+      color: #6c757d;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .jogador-atual {
+      background: #d4edda !important;
+      font-weight: bold;
+    }
+    .badge-banco {
+      background: #ffc107;
+      color: #000;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1> Banco Digital Monopoly</h1>
+  <small style="display:block;font-size:0.8rem;opacity:0.8;"></small>
+</header>
+
+<div class="container">
+
+  <!-- ===== LOGIN ===== -->
+  <div id="login">
+    <h2>Entrar na partida</h2>
+    
+    <div id="statusConexao" class="info-codigo sucesso">
+       Modo Local - dados salvos no seu navegador
+    </div>
+    
+    <div class="botoes-sessao">
+      <button class="btn-criar" onclick="criarSessaoPersonalizada()"> Criar com este código</button>
+      <button class="btn-aleatorio" onclick="criarSessaoAleatoria()"> Criar aleatória</button>
+    </div>
+
+    <div class="info-codigo" id="infoCodigo">
+      Digite um código de 6 dígitos ou crie uma nova sessão
+    </div>
+
+    <label>Código da sessão (6 dígitos)</label>
+    <input id="codigo" placeholder="ex: 123456" value="" maxlength="6">
+
+    <label>Seu nome</label>
+    <input id="nome" placeholder="Seu nome" value="">
+
+    <button onclick="entrar()" id="btnEntrar"> Entrar na sessão</button>
+
+    <hr>
+    <button class="btn-voltar" onclick="abrirAdmin()"> Gerenciar Sessões</button>
+  </div>
+
+  <!-- ===== ADMIN ===== -->
+  <div id="adminPanel">
+    <h2> Gerenciar Sessões</h2>
+    <div id="listaSessoesAdmin"></div>
+    <br>
+    <button class="btn-voltar" onclick="fecharAdmin()"> Voltar</button>
+  </div>
+
+  <!-- ===== JOGO ===== -->
+  <div id="jogo">
+    <h2 id="bemvindo">Olá, João</h2>
+    <div class="info-codigo" id="codigoSessaoAtual">Código: </div>
+
+    <div class="saldo" id="saldo">R$ 1500</div>
+
+    <div class="botoes-transacao">
+      <button class="btn-transferir" onclick="transferir()"> Transferir</button>
+      <button class="btn-pagar" onclick="pagarBanco()"> Pagar</button>
+      <button class="btn-receber" onclick="receberBanco()"> Receber</button>
+    </div>
+
+    <hr>
+    
+    <h3> Jogadores</h3>
+    <ul id="listaJogadores"></ul>
+
+    <h3> Histórico</h3>
+    <ul id="historico"></ul>
+
+    <hr>
+    <div class="botoes-admin">
+      <button class="btn-excluir" onclick="sair()"> Sair da sessão</button>
+      <button class="btn-voltar" onclick="abrirAdmin()"> Gerenciar</button>
+    </div>
+    <div class="dados-salvos" id="dadosSalvos">Dados salvos localmente</div>
+    <div style="margin-top: 20px; padding: 16px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+  <h3> Administração</h3>
+  
+  <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+    <input id="novoPlayer" placeholder="Nome do jogador" style="flex:2; min-width:120px;">
+    <input id="saldoInicial" placeholder="Saldo inicial" type="number" value="1500" style="flex:1; min-width:80px;">
+    <button onclick="adicionarPlayer()" style="flex:1; min-width:100px; background:#28a745;"> Adicionar</button>
+  </div>
+
+  <div id="listaPlayersAdmin" style="max-height:200px; overflow-y:auto;">
+    <!-- Lista de players com opção de alterar saldo -->
+  </div>
+</div>
+  </div>
+
+</div>
+
+<script>
+   
+  // VARIÁVEIS GLOBAIS
+   
+  let codigoAtual = '';
+  let jogadorAtual = null;
+
+   
+  // ELEMENTOS DOM
+   
+  const $ = id => document.getElementById(id);
+  const saldoEl = $('saldo');
+  const listaJogadores = $('listaJogadores');
+  const historicoEl = $('historico');
+  const infoCodigo = $('infoCodigo');
+  const codigoSessaoAtual = $('codigoSessaoAtual');
+  const inputCodigo = $('codigo');
+  const btnEntrar = $('btnEntrar');
+
+   
+  // FUNÇÕES DO LOCALSTORAGE
+   
+  
+  function getSessoes() {
+    try {
+      const data = localStorage.getItem('monopoly_sessoes');
+      return data ? JSON.parse(data) : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function salvarSessoes(sessoes) {
+    localStorage.setItem('monopoly_sessoes', JSON.stringify(sessoes));
+  }
+
+  function getSessao(codigo) {
+    const sessoes = getSessoes();
+    return sessoes[codigo] || null;
+  }
+
+  function salvarSessao(codigo, dados) {
+    const sessoes = getSessoes();
+    sessoes[codigo] = dados;
+    salvarSessoes(sessoes);
+  }
+
+  function excluirSessao(codigo) {
+    const sessoes = getSessoes();
+    delete sessoes[codigo];
+    salvarSessoes(sessoes);
+  }
+
+  function gerarCodigoAleatorio() {
+    let codigo;
+    let existe = true;
+    const sessoes = getSessoes();
+    
+    while (existe) {
+      codigo = Math.floor(100000 + Math.random() * 900000).toString();
+      existe = sessoes[codigo] !== undefined;
+    }
+    
+    return codigo;
+  }
+
+   
+  // FUNÇÕES DA UI
+   
+  function atualizarSaldoUI(valor) {
+    if (jogadorAtual) jogadorAtual.saldo = valor;
+    saldoEl.textContent = `R$ ${Number(valor).toFixed(0)}`;
+  }
+
+  function adicionarHistoricoUI(texto) {
+    const li = document.createElement('li');
+    li.textContent = texto;
+    historicoEl.prepend(li);
+    while (historicoEl.children.length > 50) {
+      historicoEl.removeChild(historicoEl.lastChild);
+    }
+  }
+
+  function mostrarInfo(mensagem, tipo = '') {
+    infoCodigo.textContent = mensagem;
+    infoCodigo.className = 'info-codigo ' + tipo;
+  }
+
+  function atualizarDadosSalvos() {
+    const sessoes = getSessoes();
+    const total = Object.keys(sessoes).length;
+    $('dadosSalvos').textContent = ` ${total} sessão(ões) salva(s) no localStorage`;
+  }
+
+   
+  // CRIAR SESSÃO COM CÓDIGO PERSONALIZADO
+   
+  function criarSessaoPersonalizada() {
+    const codigo = inputCodigo.value.trim();
+    
+    if (!codigo) {
+      mostrarInfo(' Digite um código de 6 dígitos primeiro.', 'erro');
+      return;
+    }
+    
+    if (!/^\d{6}$/.test(codigo)) {
+      mostrarInfo(' O código deve ter exatamente 6 dígitos numéricos.', 'erro');
+      return;
+    }
+
+    const sessoes = getSessoes();
+    
+    if (sessoes[codigo]) {
+      mostrarInfo(' Este código já está em uso. Escolha outro.', 'erro');
+      return;
+    }
+
+    // Cria nova sessão
+    sessoes[codigo] = {
+      criadaEm: new Date().toLocaleString(),
+      status: 'ABERTA',
+      jogadores: [],
+      historico: []
+    };
+
+    salvarSessoes(sessoes);
+    
+    mostrarInfo(` Sessão criada com sucesso! Código: ${codigo}`, 'sucesso');
+    inputCodigo.value = codigo;
+    $('nome').focus();
+    atualizarDadosSalvos();
+  }
+
+   
+  // CRIAR SESSÃO ALEATÓRIA
+   
+  function criarSessaoAleatoria() {
+    const codigo = gerarCodigoAleatorio();
+    
+    const sessoes = getSessoes();
+    sessoes[codigo] = {
+      criadaEm: new Date().toLocaleString(),
+      status: 'ABERTA',
+      jogadores: [],
+      historico: []
+    };
+
+    salvarSessoes(sessoes);
+    
+    inputCodigo.value = codigo;
+    mostrarInfo(` Sessão aleatória criada! Código: ${codigo}`, 'sucesso');
+    $('nome').focus();
+    atualizarDadosSalvos();
+  }
+
+   
+  // VALIDAR CÓDIGO
+   
+  inputCodigo.addEventListener('input', function() {
+    const valor = this.value.trim();
+    if (valor && !/^\d{6}$/.test(valor)) {
+      mostrarInfo(' Código deve ter 6 dígitos numéricos', 'erro');
+    } else if (valor && /^\d{6}$/.test(valor)) {
+      const sessoes = getSessoes();
+      if (sessoes[valor]) {
+        mostrarInfo(` Sessão ${valor} existe. Digite seu nome e entre.`, 'sucesso');
+      } else {
+        mostrarInfo(` Código válido: ${valor}. Clique em "Criar com este código" para criar a sessão.`, 'sucesso');
+      }
+    } else {
+      mostrarInfo('Digite um código de 6 dígitos ou crie uma nova sessão');
+    }
+  });
+
+   
+  // LOGIN / ENTRAR
+   
+  function entrar() {
+    const codigo = inputCodigo.value.trim();
+    const nome = $('nome').value.trim();
+    
+    if (!codigo || !nome) {
+      alert('Preencha código e nome.');
+      return;
+    }
+
+    if (!/^\d{6}$/.test(codigo)) {
+      alert('O código deve ter exatamente 6 dígitos numéricos.');
+      return;
+    }
+
+    const sessoes = getSessoes();
+    let sessao = sessoes[codigo];
+
+    // Se a sessão não existe, pergunta se quer criar
+    if (!sessao) {
+      const criar = confirm(`A sessão "${codigo}" não existe. Deseja criar uma nova sessão com este código?`);
+      if (criar) {
+        sessoes[codigo] = {
+          criadaEm: new Date().toLocaleString(),
+          status: 'ABERTA',
+          jogadores: [],
+          historico: []
+        };
+        sessao = sessoes[codigo];
+        salvarSessoes(sessoes);
+        mostrarInfo(` Sessão criada com sucesso! Código: ${codigo}`, 'sucesso');
+      } else {
+        return;
+      }
+    }
+
+    // Verifica se a sessão está encerrada
+    if (sessao.status === 'ENCERRADA') {
+      alert('Esta sessão foi encerrada.');
+      return;
+    }
+
+    // Procura o jogador
+    let jogador = sessao.jogadores.find(j => j.nome === nome);
+
+    // Se não existir, cria
+    if (!jogador) {
+      jogador = {
+        nome: nome,
+        saldo: 1500
+      };
+      sessao.jogadores.push(jogador);
+      salvarSessoes(sessoes);
+    }
+
+    // Guarda dados
+    codigoAtual = codigo;
+    jogadorAtual = jogador;
+
+    // Atualiza interface
+    atualizarSaldoUI(jogador.saldo);
+    $('bemvindo').textContent = `Olá, ${jogador.nome}`;
+    codigoSessaoAtual.textContent = `Código: ${codigoAtual}`;
+
+    // Mostra tela de jogo
+    $('login').style.display = 'none';
+    $('adminPanel').style.display = 'none';
+    $('jogo').style.display = 'block';
+
+    // Carrega dados
+    carregarJogadores();
+    carregarHistorico();
+    atualizarDadosSalvos();
+  }
+
+   
+  // SAIR DA SESSÃO
+   
+  function sair() {
+    if (confirm('Deseja sair da sessão?')) {
+      $('jogo').style.display = 'none';
+      $('login').style.display = 'block';
+      codigoAtual = '';
+      jogadorAtual = null;
+      atualizarDadosSalvos();
+    }
+  }
+
+   
+  // ADMIN - EDITAR SESSÕES
+   
+  function abrirAdmin() {
+    $('login').style.display = 'none';
+    $('jogo').style.display = 'none';
+    $('adminPanel').style.display = 'block';
+    carregarListaSessoesAdmin();
+  }
+
+  function fecharAdmin() {
+    $('adminPanel').style.display = 'none';
+    $('login').style.display = 'block';
+    atualizarDadosSalvos();
+  }
+
+  function carregarListaSessoesAdmin() {
+    const sessoes = getSessoes();
+    const container = $('listaSessoesAdmin');
+    
+    if (Object.keys(sessoes).length === 0) {
+      container.innerHTML = '<p style="color:#6c757d;">Nenhuma sessão salva.</p>';
+      return;
+    }
+
+    let html = '<ul>';
+    for (const [codigo, dados] of Object.entries(sessoes)) {
+      const qtdJogadores = dados.jogadores ? dados.jogadores.length : 0;
+      html += `
+        <li style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <span>
+            <strong>${codigo}</strong> 
+            <span style="font-size:0.8rem;color:#6c757d;">
+              (${dados.status || 'ABERTA'}) - ${qtdJogadores} jogador(es)
+            </span>
+          </span>
+          <span>
+            <button onclick="entrarSessaoAdmin('${codigo}')" style="width:auto;padding:4px 12px;font-size:0.8rem;background:#28a745;">Entrar</button>
+            <button onclick="excluirSessaoAdmin('${codigo}')" style="width:auto;padding:4px 12px;font-size:0.8rem;background:#dc3545;">Excluir</button>
+          </span>
+        </li>
+      `;
+    }
+    html += '</ul>';
+    container.innerHTML = html;
+  }
+
+  function entrarSessaoAdmin(codigo) {
+    inputCodigo.value = codigo;
+    fecharAdmin();
+    // Foca no nome
+    $('nome').focus();
+    mostrarInfo(` Sessão ${codigo} selecionada. Digite seu nome e entre.`, 'sucesso');
+  }
+
+  function excluirSessaoAdmin(codigo) {
+    if (confirm(`Tem certeza que deseja excluir a sessão "${codigo}"?`)) {
+      excluirSessao(codigo);
+      carregarListaSessoesAdmin();
+      atualizarDadosSalvos();
+    }
+  }
+
+   
+  // CARREGAR JOGADORES
+   
+  function carregarJogadores() {
+    if (!codigoAtual) return;
+    
+    const sessao = getSessao(codigoAtual);
+    if (!sessao) return;
+
+    listaJogadores.innerHTML = '';
+    sessao.jogadores.forEach(j => {
+      const li = document.createElement('li');
+      li.textContent = `${j.nome} — R$ ${Number(j.saldo).toFixed(0)}`;
+      if (j.nome === jogadorAtual?.nome) {
+        li.className = 'jogador-atual';
+      }
+      listaJogadores.appendChild(li);
+    });
+  }
+
+   
+  // 8. CARREGAR HISTÓRICO
+   
+  function carregarHistorico() {
+    if (!codigoAtual) return;
+    
+    const sessao = getSessao(codigoAtual);
+    if (!sessao) return;
+
+    historicoEl.innerHTML = '';
+    (sessao.historico || []).forEach(t => {
+      const li = document.createElement('li');
+      let texto = `${t.data} | `;
+      if (t.origem === 'Banco') {
+        texto += ` Recebeu R$ ${Number(t.valor).toFixed(0)} do Banco`;
+      } else if (t.destino === 'Banco') {
+        texto += ` Pagou R$ ${Number(t.valor).toFixed(0)} ao Banco`;
+      } else {
+        texto += `${t.origem} → ${t.destino}  R$ ${Number(t.valor).toFixed(0)}`;
+      }
+      li.textContent = texto;
+      historicoEl.appendChild(li);
+    });
+  }
+
+ 
+// FUNÇÕES DE ADMINISTRAÇÃO - ADICIONAR E ALTERAR PLAYERS
+ 
+
+// Adicionar novo player
+function adicionarPlayer() {
+  const nome = document.getElementById('novoPlayer').value.trim();
+  const saldoInicial = Number(document.getElementById('saldoInicial').value) || 1500;
+
+  if (!nome) {
+    alert('Digite o nome do jogador.');
+    return;
+  }
+
+  if (saldoInicial < 0) {
+    alert('O saldo não pode ser negativo.');
+    return;
+  }
+
+  // Verifica se a sessão existe
+  const sessao = getSessao(codigoAtual);
+  if (!sessao) {
+    alert('Sessão não encontrada.');
+    return;
+  }
+
+  // Verifica se o jogador já existe
+  if (sessao.jogadores.find(j => j.nome === nome)) {
+    alert(`O jogador "${nome}" já existe.`);
+    return;
+  }
+
+  // Adiciona o jogador
+  sessao.jogadores.push({
+    nome: nome,
+    saldo: saldoInicial
+  });
+
+  // Salva
+  salvarSessao(codigoAtual, sessao);
+
+  // Atualiza UI
+  carregarJogadores();
+  carregarPlayersAdmin();
+  atualizarDadosSalvos();
+
+  // Limpa o campo
+  document.getElementById('novoPlayer').value = '';
+  document.getElementById('saldoInicial').value = '1500';
+
+  alert(` Jogador "${nome}" adicionado com saldo de R$ ${saldoInicial}`);
+}
+
+// Carregar lista de players para administração
+function carregarPlayersAdmin() {
+  const container = document.getElementById('listaPlayersAdmin');
+  
+  if (!codigoAtual) {
+    container.innerHTML = '<p style="color:#6c757d; font-size:0.9rem;">Entre em uma sessão para gerenciar jogadores.</p>';
+    return;
+  }
+
+  const sessao = getSessao(codigoAtual);
+  if (!sessao || !sessao.jogadores || sessao.jogadores.length === 0) {
+    container.innerHTML = '<p style="color:#6c757d; font-size:0.9rem;">Nenhum jogador nesta sessão.</p>';
+    return;
+  }
+
+  let html = '';
+  sessao.jogadores.forEach((jogador, index) => {
+    const isJogadorAtual = jogador.nome === jogadorAtual?.nome;
+    html += `
+      <div class="player-item" style="${isJogadorAtual ? 'border-left: 4px solid #28a745;' : ''}">
+        <span class="player-nome">
+          ${jogador.nome}
+          ${isJogadorAtual ? ' <span style="font-size:0.7rem;color:#28a745;">(você)</span>' : ''}
+        </span>
+        <span class="player-saldo">R$ ${Number(jogador.saldo).toFixed(0)}</span>
+        <div class="player-actions">
+          <input type="number" id="novoSaldo_${index}" value="${jogador.saldo}" min="0" step="1">
+          <button class="btn-salvar-saldo" onclick="alterarSaldoPlayer(${index})">💾</button>
+          <button class="btn-remover-player" onclick="removerPlayer(${index})">🗑️</button>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+// Alterar saldo de um player específico
+function alterarSaldoPlayer(index) {
+  const sessao = getSessao(codigoAtual);
+  if (!sessao || !sessao.jogadores || index >= sessao.jogadores.length) {
+    alert('Erro ao encontrar jogador.');
+    return;
+  }
+
+  const input = document.getElementById(`novoSaldo_${index}`);
+  const novoSaldo = Number(input.value);
+
+  if (isNaN(novoSaldo) || novoSaldo < 0) {
+    alert('Digite um valor válido (não negativo).');
+    return;
+  }
+
+  const jogador = sessao.jogadores[index];
+  const nome = jogador.nome;
+  const saldoAntigo = jogador.saldo;
+
+  // Atualiza saldo
+  jogador.saldo = novoSaldo;
+
+  // Registra no histórico
+  if (!sessao.historico) sessao.historico = [];
+  sessao.historico.unshift({
+    origem: 'Admin',
+    destino: nome,
+    valor: novoSaldo - saldoAntigo,
+    data: new Date().toLocaleString(),
+    observacao: `Saldo alterado de R$ ${saldoAntigo} para R$ ${novoSaldo}`
+  });
+
+  // Salva
+  salvarSessao(codigoAtual, sessao);
+
+  // Se for o jogador atual, atualiza o saldo na interface
+  if (jogadorAtual && jogadorAtual.nome === nome) {
+    jogadorAtual.saldo = novoSaldo;
+    atualizarSaldoUI(novoSaldo);
+  }
+
+  // Atualiza UI
+  carregarJogadores();
+  carregarPlayersAdmin();
+  carregarHistorico();
+  atualizarDadosSalvos();
+
+  alert(` Saldo de "${nome}" atualizado para R$ ${novoSaldo}`);
+}
+
+// Remover um player
+function removerPlayer(index) {
+  const sessao = getSessao(codigoAtual);
+  if (!sessao || !sessao.jogadores || index >= sessao.jogadores.length) {
+    alert('Erro ao encontrar jogador.');
+    return;
+  }
+
+  const nome = sessao.jogadores[index].nome;
+
+  if (nome === jogadorAtual?.nome) {
+    alert('Você não pode remover a si mesmo.');
+    return;
+  }
+
+  if (!confirm(`Tem certeza que deseja remover o jogador "${nome}"?`)) {
+    return;
+  }
+
+  sessao.jogadores.splice(index, 1);
+
+  // Salva
+  salvarSessao(codigoAtual, sessao);
+
+  // Atualiza UI
+  carregarJogadores();
+  carregarPlayersAdmin();
+  atualizarDadosSalvos();
+
+  alert(` Jogador "${nome}" removido.`);
+}
+
+// Sobrescrever a função carregarJogadores para incluir o admin
+const carregarJogadoresOriginal = carregarJogadores;
+carregarJogadores = function() {
+  carregarJogadoresOriginal();
+  carregarPlayersAdmin();
+};
+
+// Chamar carregarPlayersAdmin quando entrar na sessão
+const entrarOriginal = entrar;
+entrar = function() {
+  entrarOriginal();
+  setTimeout(carregarPlayersAdmin, 100);
+};
+
+   
+  // TRANSFERIR
+   
+  function transferir() {
+    if (!jogadorAtual) {
+      alert('Você precisa estar logado.');
+      return;
+    }
+
+    const destino = prompt('Nome do destinatário:');
+    if (destino === null || destino.trim() === '') return;
+    
+    const valorStr = prompt('Valor:');
+    if (valorStr === null) return;
+    
+    const valor = Number(valorStr);
+    if (isNaN(valor) || valor <= 0) {
+      alert('Valor inválido.');
+      return;
+    }
+
+    const sessao = getSessao(codigoAtual);
+    if (!sessao) {
+      alert('Sessão não encontrada.');
+      return;
+    }
+
+    const remetente = sessao.jogadores.find(j => j.nome === jogadorAtual.nome);
+    const destinatario = sessao.jogadores.find(j => j.nome === destino.trim());
+
+    if (!destinatario) {
+      alert('Jogador destinatário não encontrado.');
+      return;
+    }
+
+    if (remetente.nome === destinatario.nome) {
+      alert('Você não pode transferir para si mesmo.');
+      return;
+    }
+
+    if (remetente.saldo < valor) {
+      alert('Saldo insuficiente.');
+      return;
+    }
+
+    // Realiza transferência
+    remetente.saldo -= valor;
+    destinatario.saldo += valor;
+
+    // Registra histórico
+    if (!sessao.historico) sessao.historico = [];
+    sessao.historico.unshift({
+      origem: remetente.nome,
+      destino: destinatario.nome,
+      valor: valor,
+      data: new Date().toLocaleString()
+    });
+
+    // Salva
+    salvarSessao(codigoAtual, sessao);
+
+    // Atualiza UI
+    jogadorAtual.saldo = remetente.saldo;
+    atualizarSaldoUI(remetente.saldo);
+    carregarJogadores();
+    carregarHistorico();
+    atualizarDadosSalvos();
+    
+    alert(' Transferência realizada com sucesso!');
+  }
+
+   
+  // 1PAGAR AO BANCO
+   
+  function pagarBanco() {
+    if (!jogadorAtual) {
+      alert('Você precisa estar logado.');
+      return;
+    }
+    
+    const valorStr = prompt('Valor a pagar ao Banco:');
+    if (valorStr === null) return;
+    
+    const valor = Number(valorStr);
+    if (isNaN(valor) || valor <= 0) {
+      alert('Valor inválido.');
+      return;
+    }
+
+    const sessao = getSessao(codigoAtual);
+    if (!sessao) {
+      alert('Sessão não encontrada.');
+      return;
+    }
+
+    const jogador = sessao.jogadores.find(j => j.nome === jogadorAtual.nome);
+
+    if (!jogador) {
+      alert('Jogador não encontrado.');
+      return;
+    }
+
+    if (jogador.saldo < valor) {
+      alert('Saldo insuficiente.');
+      return;
+    }
+
+    // Realiza pagamento
+    jogador.saldo -= valor;
+
+    // Registra histórico
+    if (!sessao.historico) sessao.historico = [];
+    sessao.historico.unshift({
+      origem: jogador.nome,
+      destino: 'Banco',
+      valor: valor,
+      data: new Date().toLocaleString()
+    });
+
+    // Salva
+    salvarSessao(codigoAtual, sessao);
+
+    // Atualiza UI
+    jogadorAtual.saldo = jogador.saldo;
+    atualizarSaldoUI(jogador.saldo);
+    carregarJogadores();
+    carregarHistorico();
+    atualizarDadosSalvos();
+    
+    alert(' Pagamento realizado com sucesso!');
+  }
+
+   
+  //  RECEBER DO BANCO
+   
+  function receberBanco() {
+    if (!jogadorAtual) {
+      alert('Você precisa estar logado.');
+      return;
+    }
+    
+    const valorStr = prompt('Valor a receber do Banco:');
+    if (valorStr === null) return;
+    
+    const valor = Number(valorStr);
+    if (isNaN(valor) || valor <= 0) {
+      alert('Valor inválido.');
+      return;
+    }
+
+    const sessao = getSessao(codigoAtual);
+    if (!sessao) {
+      alert('Sessão não encontrada.');
+      return;
+    }
+
+    const jogador = sessao.jogadores.find(j => j.nome === jogadorAtual.nome);
+
+    if (!jogador) {
+      alert('Jogador não encontrado.');
+      return;
+    }
+
+    // Realiza recebimento
+    jogador.saldo += valor;
+
+    // Registra histórico
+    if (!sessao.historico) sessao.historico = [];
+    sessao.historico.unshift({
+      origem: 'Banco',
+      destino: jogador.nome,
+      valor: valor,
+      data: new Date().toLocaleString()
+    });
+
+    // Salva
+    salvarSessao(codigoAtual, sessao);
+
+    // Atualiza UI
+    jogadorAtual.saldo = jogador.saldo;
+    atualizarSaldoUI(jogador.saldo);
+    carregarJogadores();
+    carregarHistorico();
+    atualizarDadosSalvos();
+    
+    alert(' Dinheiro recebido com sucesso!');
+  }
+
+   
+  // 12. INICIALIZAÇÃO
+   
+  console.log(' Banco Digital Monopoly - Modo Local carregado.');
+  
+  // Gera um código aleatório inicial para facilitar
+  const codigoInicial = Math.floor(100000 + Math.random() * 900000).toString();
+  inputCodigo.value = codigoInicial;
+  mostrarInfo(` Sugestão de código: ${codigoInicial}. Clique em "Criar com este código" ou use um código personalizado.`);
+  
+  atualizarDadosSalvos();
+
+  // Permite criar sessão pressionando Enter no campo de código
+  inputCodigo.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      criarSessaoPersonalizada();
+    }
+  });
+
+  // Também permite entrar pressionando Enter no campo de nome
+  $('nome').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      entrar();
+    }
+  });
+</script>
+</body>
+</html>
