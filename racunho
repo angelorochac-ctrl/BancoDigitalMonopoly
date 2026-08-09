@@ -1,0 +1,16 @@
+Users
+    id
+    name
+    balance
+    sessionId
+
+Transactions
+    id
+    amount
+    time
+    orgin
+    destination
+
+Sessions
+    id
+    password

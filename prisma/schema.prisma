@@ -1,0 +1,35 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider      = "prisma-client"
+  output        = "../src/generated/prisma"
+  moduleFormat  = "cjs"
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  name        String
+  balance     Float         @default(0)
+  sessionId   Int?
+  session     Session?      @relation(fields: [sessionId], references: [id])
+  originTxns  Transaction[] @relation("OriginTransactions")
+  destTxns    Transaction[] @relation("DestinationTransactions")
+}
+
+model Transaction {
+  id             Int      @id @default(autoincrement())
+  amount         Float
+  time           DateTime @default(now())
+  originId       Int
+  destinationId  Int
+  origin         User     @relation("OriginTransactions", fields: [originId], references: [id])
+  destination    User     @relation("DestinationTransactions", fields: [destinationId], references: [id])
+}
+
+model Session {
+  id       Int    @id @default(autoincrement())
+  password String
+  users    User[]
+}
