@@ -24,22 +24,46 @@ export class AppController {
   }
 
   @Post('transfer')
-  transfer() {
-    this.appService.transfer();
+  transfer(
+    @Body()
+    data: {
+      fromUserId: number;
+      toUserId: number;
+      amount: number;
+    },
+  ) {
+    return this.appService.transfer(data);
   }
 
   @Post('receive')
-  receive() {
-    this.appService.receive();
+  receive(
+    @Body()
+    data: {
+      userId: number;
+      amount: number;
+    },
+  ) {
+    return this.appService.receive(data);
   }
 
   @Get('balance')
-  balance() {
-    this.appService.balance();
+  balance(
+    @Body()
+    data: {
+      userId: number;
+      amount: number;
+    },
+  ) {
+    return this.appService.balance(data);
   }
 
   @Get('history')
-  history() {
-    this.appService.history();
+  history(
+    @Body()
+    data: {
+      userId: number;
+    },
+  ) {
+    return this.appService.history(data);
   }
 }
