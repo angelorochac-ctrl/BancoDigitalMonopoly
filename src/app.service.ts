@@ -56,6 +56,7 @@ export class AppService {
         data: {
           name: data.name,
           sessionId: data.sessionId,
+          balance: 1500,
         },
       });
     }
@@ -133,9 +134,7 @@ export class AppService {
     }
 
     const transactions = await this.prisma.transaction.findMany({
-      where: {
-        originId: data.userId , destinationId: data.userId ,
-      },
+      where: {originId: data.userId , destinationId: data.userId },
       orderBy: { time: 'desc' },
       include: {
         origin: true,
