@@ -46,18 +46,17 @@ export class AppController {
     return this.appService.receive(data);
   }
 
-  @Get('balance')
+  @Post('balance')
   balance(
     @Body()
     data: {
       userId: number;
-      amount: number;
     },
   ) {
     return this.appService.balance(data);
   }
 
-  @Get('history')
+  @Post('history')
   history(
     @Body()
     data: {

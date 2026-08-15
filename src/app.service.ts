@@ -112,7 +112,7 @@ export class AppService {
     return { message: data.amount + 'Received successfully' };
   }
 
-  async balance(data: { userId: number; amount: number }) {
+  async balance(data: { userId: number}) {
     const user = await this.prisma.user.findUnique({
       where: { id: data.userId },
     });
@@ -141,12 +141,7 @@ export class AppService {
 
     
     const transactions = await this.prisma.transaction.findMany({
-      where: {
-        AND: [
-          { originId: { in: userIds } },
-          { destinationId: { in: userIds } }
-        ]
-      },
+      where: { originId: { in: userIds }, destinationId: { in: userIds } },
       orderBy: { time: 'desc' },
       include: {
         origin: true,
