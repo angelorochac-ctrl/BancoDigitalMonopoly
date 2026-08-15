@@ -61,7 +61,7 @@ export class AppController {
   history(
     @Body()
     data: {
-      userId: number;
+      sessionId: number;
     },
   ) {
     return this.appService.history(data);

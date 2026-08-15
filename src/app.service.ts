@@ -112,26 +112,41 @@ export class AppService {
     return { message: data.amount + 'Received successfully' };
   }
 
-  async balance(data: { userId: number }) {
+  async balance(data: { userId: number; amount: number }) {
     const user = await this.prisma.user.findUnique({
       where: { id: data.userId },
     });
     if (!user) {
       throw new Error('User not found');
+    }
+    if (user.balance < 0) {
+      throw new Error('Balance cannot be negative');
     }
     return { balance: user.balance };
   }
 
-  async history(data: { userId: number }) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: data.userId },
+  async history(data: { sessionId: number }) {
+    const session = await this.prisma.session.findUnique({
+      where: { id: data.sessionId },
     });
-    if (!user) {
-      throw new Error('User not found');
+    if (!session) {
+      throw new Error('Session not found');
     }
 
+    
+    const users = await this.prisma.user.findMany({
+      where: { sessionId: data.sessionId },
+    });
+    const userIds = users.map(u => u.id);
+
+    
     const transactions = await this.prisma.transaction.findMany({
-      where: {originId: data.userId , destinationId: data.userId },
+      where: {
+        AND: [
+          { originId: { in: userIds } },
+          { destinationId: { in: userIds } }
+        ]
+      },
       orderBy: { time: 'desc' },
       include: {
         origin: true,
@@ -143,7 +158,6 @@ export class AppService {
       id: transaction.id,
       amount: transaction.amount,
       time: transaction.time,
-      type: transaction.originId === data.userId ? 'sent' : 'received',
       origin: {
         id: transaction.origin.id,
         name: transaction.origin.name,
