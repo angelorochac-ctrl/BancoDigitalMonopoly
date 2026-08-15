@@ -141,7 +141,12 @@ export class AppService {
 
     
     const transactions = await this.prisma.transaction.findMany({
-      where: { originId: { in: userIds }, destinationId: { in: userIds } },
+      where: {
+        OR: [
+          { originId: { in: userIds } },
+          { destinationId: { in: userIds } }
+        ]
+      },
       orderBy: { time: 'desc' },
       include: {
         origin: true,
