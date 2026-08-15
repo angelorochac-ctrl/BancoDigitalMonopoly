@@ -112,15 +112,12 @@ export class AppService {
     return { message: data.amount + 'Received successfully' };
   }
 
-  async balance(data: { userId: number; amount: number }) {
+  async balance(data: { userId: number }) {
     const user = await this.prisma.user.findUnique({
       where: { id: data.userId },
     });
     if (!user) {
       throw new Error('User not found');
-    }
-    if (user.balance < data.amount) {
-      throw new Error('Insufficient balance');
     }
     return { balance: user.balance };
   }
