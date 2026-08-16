@@ -22,9 +22,9 @@ model Transaction {
   id             Int      @id @default(autoincrement())
   amount         Float
   time           DateTime @default(now())
-  originId       Int
+  originId       Int?
   destinationId  Int
-  origin         User     @relation("OriginTransactions", fields: [originId], references: [id])
+  origin         User?     @relation("OriginTransactions", fields: [originId], references: [id])
   destination    User     @relation("DestinationTransactions", fields: [destinationId], references: [id])
 }
 

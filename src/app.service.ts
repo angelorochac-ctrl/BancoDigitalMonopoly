@@ -81,6 +81,9 @@ export class AppService {
       throw new Error('Insufficient balance');
     }
     const transaction = await this.prisma.$transaction(async (prisma) => {
+      await prisma.transaction.create({
+        data: {amount: data.amount, originId: data.fromUserId, destinationId: data.toUserId },
+      });
       await prisma.user.update({
         where: { id: data.fromUserId },
         data: { balance: { decrement: data.amount } },
@@ -104,6 +107,9 @@ export class AppService {
     if (data.amount <= 0) {
       throw new Error('Amount must be greater than zero');
     }
+    await this.prisma.transaction.create({
+      data: { amount: data.amount, destinationId: data.userId },
+    });
     await this.prisma.user.update({
       where: { id: data.userId },
       data: { balance: { increment: data.amount } },
@@ -126,6 +132,7 @@ export class AppService {
   }
 
   async history(data: { sessionId: number }) {
+    console.log(data.sessionId);
     const session = await this.prisma.session.findUnique({
       where: { id: data.sessionId },
     });
@@ -133,7 +140,6 @@ export class AppService {
       throw new Error('Session not found');
     }
 
-    
     const users = await this.prisma.user.findMany({
       where: { sessionId: data.sessionId },
     });
@@ -158,10 +164,10 @@ export class AppService {
       id: transaction.id,
       amount: transaction.amount,
       time: transaction.time,
-      origin: {
+      origin: transaction.origin ? {
         id: transaction.origin.id,
         name: transaction.origin.name,
-      },
+      } : null,
       destination: {
         id: transaction.destination.id,
         name: transaction.destination.name,

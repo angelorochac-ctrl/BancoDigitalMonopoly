@@ -195,7 +195,7 @@ export type TransactionGroupByOutputType = {
   id: number
   amount: number
   time: Date
-  originId: number
+  originId: number | null
   destinationId: number
   _count: TransactionCountAggregateOutputType | null
   _avg: TransactionAvgAggregateOutputType | null
@@ -226,9 +226,9 @@ export type TransactionWhereInput = {
   id?: Prisma.IntFilter<"Transaction"> | number
   amount?: Prisma.FloatFilter<"Transaction"> | number
   time?: Prisma.DateTimeFilter<"Transaction"> | Date | string
-  originId?: Prisma.IntFilter<"Transaction"> | number
+  originId?: Prisma.IntNullableFilter<"Transaction"> | number | null
   destinationId?: Prisma.IntFilter<"Transaction"> | number
-  origin?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  origin?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   destination?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
@@ -236,7 +236,7 @@ export type TransactionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   time?: Prisma.SortOrder
-  originId?: Prisma.SortOrder
+  originId?: Prisma.SortOrderInput | Prisma.SortOrder
   destinationId?: Prisma.SortOrder
   origin?: Prisma.UserOrderByWithRelationInput
   destination?: Prisma.UserOrderByWithRelationInput
@@ -249,9 +249,9 @@ export type TransactionWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.TransactionWhereInput | Prisma.TransactionWhereInput[]
   amount?: Prisma.FloatFilter<"Transaction"> | number
   time?: Prisma.DateTimeFilter<"Transaction"> | Date | string
-  originId?: Prisma.IntFilter<"Transaction"> | number
+  originId?: Prisma.IntNullableFilter<"Transaction"> | number | null
   destinationId?: Prisma.IntFilter<"Transaction"> | number
-  origin?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  origin?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   destination?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
 
@@ -259,7 +259,7 @@ export type TransactionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   time?: Prisma.SortOrder
-  originId?: Prisma.SortOrder
+  originId?: Prisma.SortOrderInput | Prisma.SortOrder
   destinationId?: Prisma.SortOrder
   _count?: Prisma.TransactionCountOrderByAggregateInput
   _avg?: Prisma.TransactionAvgOrderByAggregateInput
@@ -275,14 +275,14 @@ export type TransactionScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"Transaction"> | number
   amount?: Prisma.FloatWithAggregatesFilter<"Transaction"> | number
   time?: Prisma.DateTimeWithAggregatesFilter<"Transaction"> | Date | string
-  originId?: Prisma.IntWithAggregatesFilter<"Transaction"> | number
+  originId?: Prisma.IntNullableWithAggregatesFilter<"Transaction"> | number | null
   destinationId?: Prisma.IntWithAggregatesFilter<"Transaction"> | number
 }
 
 export type TransactionCreateInput = {
   amount: number
   time?: Date | string
-  origin: Prisma.UserCreateNestedOneWithoutOriginTxnsInput
+  origin?: Prisma.UserCreateNestedOneWithoutOriginTxnsInput
   destination: Prisma.UserCreateNestedOneWithoutDestTxnsInput
 }
 
@@ -290,14 +290,14 @@ export type TransactionUncheckedCreateInput = {
   id?: number
   amount: number
   time?: Date | string
-  originId: number
+  originId?: number | null
   destinationId: number
 }
 
 export type TransactionUpdateInput = {
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  origin?: Prisma.UserUpdateOneRequiredWithoutOriginTxnsNestedInput
+  origin?: Prisma.UserUpdateOneWithoutOriginTxnsNestedInput
   destination?: Prisma.UserUpdateOneRequiredWithoutDestTxnsNestedInput
 }
 
@@ -305,7 +305,7 @@ export type TransactionUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  originId?: Prisma.IntFieldUpdateOperationsInput | number
+  originId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   destinationId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -313,7 +313,7 @@ export type TransactionCreateManyInput = {
   id?: number
   amount: number
   time?: Date | string
-  originId: number
+  originId?: number | null
   destinationId: number
 }
 
@@ -326,7 +326,7 @@ export type TransactionUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  originId?: Prisma.IntFieldUpdateOperationsInput | number
+  originId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   destinationId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -491,14 +491,14 @@ export type TransactionCreateManyOriginInputEnvelope = {
 export type TransactionCreateWithoutDestinationInput = {
   amount: number
   time?: Date | string
-  origin: Prisma.UserCreateNestedOneWithoutOriginTxnsInput
+  origin?: Prisma.UserCreateNestedOneWithoutOriginTxnsInput
 }
 
 export type TransactionUncheckedCreateWithoutDestinationInput = {
   id?: number
   amount: number
   time?: Date | string
-  originId: number
+  originId?: number | null
 }
 
 export type TransactionCreateOrConnectWithoutDestinationInput = {
@@ -533,7 +533,7 @@ export type TransactionScalarWhereInput = {
   id?: Prisma.IntFilter<"Transaction"> | number
   amount?: Prisma.FloatFilter<"Transaction"> | number
   time?: Prisma.DateTimeFilter<"Transaction"> | Date | string
-  originId?: Prisma.IntFilter<"Transaction"> | number
+  originId?: Prisma.IntNullableFilter<"Transaction"> | number | null
   destinationId?: Prisma.IntFilter<"Transaction"> | number
 }
 
@@ -564,7 +564,7 @@ export type TransactionCreateManyDestinationInput = {
   id?: number
   amount: number
   time?: Date | string
-  originId: number
+  originId?: number | null
 }
 
 export type TransactionUpdateWithoutOriginInput = {
@@ -590,21 +590,21 @@ export type TransactionUncheckedUpdateManyWithoutOriginInput = {
 export type TransactionUpdateWithoutDestinationInput = {
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  origin?: Prisma.UserUpdateOneRequiredWithoutOriginTxnsNestedInput
+  origin?: Prisma.UserUpdateOneWithoutOriginTxnsNestedInput
 }
 
 export type TransactionUncheckedUpdateWithoutDestinationInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  originId?: Prisma.IntFieldUpdateOperationsInput | number
+  originId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type TransactionUncheckedUpdateManyWithoutDestinationInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  originId?: Prisma.IntFieldUpdateOperationsInput | number
+  originId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 
@@ -615,7 +615,7 @@ export type TransactionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   time?: boolean
   originId?: boolean
   destinationId?: boolean
-  origin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  origin?: boolean | Prisma.Transaction$originArgs<ExtArgs>
   destination?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["transaction"]>
 
@@ -625,7 +625,7 @@ export type TransactionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   time?: boolean
   originId?: boolean
   destinationId?: boolean
-  origin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  origin?: boolean | Prisma.Transaction$originArgs<ExtArgs>
   destination?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["transaction"]>
 
@@ -635,7 +635,7 @@ export type TransactionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   time?: boolean
   originId?: boolean
   destinationId?: boolean
-  origin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  origin?: boolean | Prisma.Transaction$originArgs<ExtArgs>
   destination?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["transaction"]>
 
@@ -649,29 +649,29 @@ export type TransactionSelectScalar = {
 
 export type TransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "amount" | "time" | "originId" | "destinationId", ExtArgs["result"]["transaction"]>
 export type TransactionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  origin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  origin?: boolean | Prisma.Transaction$originArgs<ExtArgs>
   destination?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type TransactionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  origin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  origin?: boolean | Prisma.Transaction$originArgs<ExtArgs>
   destination?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type TransactionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  origin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  origin?: boolean | Prisma.Transaction$originArgs<ExtArgs>
   destination?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $TransactionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Transaction"
   objects: {
-    origin: Prisma.$UserPayload<ExtArgs>
+    origin: Prisma.$UserPayload<ExtArgs> | null
     destination: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     amount: number
     time: Date
-    originId: number
+    originId: number | null
     destinationId: number
   }, ExtArgs["result"]["transaction"]>
   composites: {}
@@ -1067,7 +1067,7 @@ readonly fields: TransactionFieldRefs;
  */
 export interface Prisma__TransactionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  origin<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  origin<T extends Prisma.Transaction$originArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Transaction$originArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   destination<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1499,6 +1499,25 @@ export type TransactionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many Transactions to delete.
    */
   limit?: number
+}
+
+/**
+ * Transaction.origin
+ */
+export type Transaction$originArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**
